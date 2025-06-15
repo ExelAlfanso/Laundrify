@@ -1,7 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
-import crudapp.Koneksi;
+import main.Koneksi;
 
 public class DataNilaiViewer {
     public static void main(String[] args) {
