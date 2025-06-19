@@ -1,4 +1,3 @@
-// File: Panels/TransaksiForm.java
 package Panels;
 
 import javax.swing.*;
@@ -15,18 +14,13 @@ import java.util.List;
 public class TransaksiForm extends JFrame {
 
     private final JTextField txtNoNota = new JTextField(8);
-    private final JFormattedTextField txtTanggal =
-            new JFormattedTextField(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-    private final JFormattedTextField txtJam =
-            new JFormattedTextField(DateTimeFormatter.ofPattern("HH:mm"));
+    private final JFormattedTextField txtTanggal = new JFormattedTextField(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    private final JFormattedTextField txtJam = new JFormattedTextField(DateTimeFormatter.ofPattern("HH:mm"));
     private final JComboBox<ComboboxItem> cbPelanggan = new JComboBox<>();
 
-    private final DefaultTableModel modelDetail = new DefaultTableModel(
-            new String[]{"Layanan", "Qty", "Harga", "Subtotal", "ID"}, 0);
-    private final DefaultTableModel modelItem = new DefaultTableModel(
-            new String[]{"Nama Item", "Jumlah", "Harga Satuan", "Subtotal"}, 0);
-    private final DefaultTableModel modelBiaya = new DefaultTableModel(
-            new String[]{"Nama Biaya", "Jumlah"}, 0);
+    private final DefaultTableModel modelDetail = new DefaultTableModel(new String[]{"Layanan", "Qty", "Harga", "Subtotal", "ID"}, 0);
+    private final DefaultTableModel modelItem = new DefaultTableModel(new String[]{"Nama Item", "Jumlah", "Harga Satuan", "Subtotal"}, 0);
+    private final DefaultTableModel modelBiaya = new DefaultTableModel(new String[]{"Nama Biaya", "Jumlah"}, 0);
 
     private final JLabel lblTotal = new JLabel("0.00");
     private final JButton btnSimpanCetak = new JButton("Simpan & Cetak");
@@ -87,8 +81,10 @@ public class TransaksiForm extends JFrame {
         JComboBox<ComboboxItem> cb = new JComboBox<>(layananList.toArray(new ComboboxItem[0]));
         JTextField qty = new JTextField(3);
         JButton add = new JButton("Tambah");
-        form.add(new JLabel("Layanan:")); form.add(cb);
-        form.add(new JLabel("Qty:")); form.add(qty);
+        form.add(new JLabel("Layanan:")); 
+        form.add(cb);
+        form.add(new JLabel("Qty:")); 
+        form.add(qty);
         form.add(add);
 
         JTable tbl = new JTable(modelDetail);
@@ -117,9 +113,12 @@ public class TransaksiForm extends JFrame {
         JTextField jumlah = new JTextField(3);
         JTextField harga = new JTextField(6);
         JButton add = new JButton("Tambah");
-        form.add(new JLabel("Item:")); form.add(nama);
-        form.add(new JLabel("Jumlah:")); form.add(jumlah);
-        form.add(new JLabel("Harga:")); form.add(harga);
+        form.add(new JLabel("Item:")); 
+        form.add(nama);
+        form.add(new JLabel("Jumlah:")); 
+        form.add(jumlah);
+        form.add(new JLabel("Harga:")); 
+        form.add(harga);
         form.add(add);
 
         JTable tbl = new JTable(modelItem);
@@ -131,7 +130,9 @@ public class TransaksiForm extends JFrame {
             if (!n.isBlank() && j > 0) {
                 double sub = j * h;
                 modelItem.addRow(new Object[]{n, j, h, sub});
-                nama.setText(""); jumlah.setText(""); harga.setText("");
+                nama.setText(""); 
+                jumlah.setText(""); 
+                harga.setText("");
                 hitungTotal();
             }
         });
@@ -147,8 +148,10 @@ public class TransaksiForm extends JFrame {
         JTextField nama = new JTextField(10);
         JTextField jumlah = new JTextField(6);
         JButton add = new JButton("Tambah");
-        form.add(new JLabel("Biaya:")); form.add(nama);
-        form.add(new JLabel("Jumlah:")); form.add(jumlah);
+        form.add(new JLabel("Biaya:")); 
+        form.add(nama);
+        form.add(new JLabel("Jumlah:")); 
+        form.add(jumlah);
         form.add(add);
 
         JTable tbl = new JTable(modelBiaya);
@@ -158,7 +161,8 @@ public class TransaksiForm extends JFrame {
             double j = parse(jumlah.getText());
             if (!n.isBlank() && j > 0) {
                 modelBiaya.addRow(new Object[]{n, j});
-                nama.setText(""); jumlah.setText("");
+                nama.setText(""); 
+                jumlah.setText("");
                 hitungTotal();
             }
         });
@@ -174,16 +178,29 @@ public class TransaksiForm extends JFrame {
         g.insets = new Insets(4, 4, 4, 4);
         g.anchor = GridBagConstraints.WEST;
 
-        g.gridx = 0; g.gridy = 0; p.add(new JLabel("No Nota:"), g);
-        g.gridx = 1; p.add(txtNoNota, g); txtNoNota.setEditable(false);
+        g.gridx = 0; 
+        g.gridy = 0; 
+        p.add(new JLabel("No Nota:"), g);
+        g.gridx = 1; 
+        p.add(txtNoNota, g); 
+        txtNoNota.setEditable(false);
 
-        g.gridy = 1; g.gridx = 0; p.add(new JLabel("Tanggal:"), g);
-        g.gridx = 1; p.add(txtTanggal, g);
-        g.gridx = 2; p.add(new JLabel("Jam:"), g);
-        g.gridx = 3; p.add(txtJam, g);
+        g.gridy = 1; 
+        g.gridx = 0; 
+        p.add(new JLabel("Tanggal:"), g);
+        g.gridx = 1; 
+        p.add(txtTanggal, g);
+        g.gridx = 2; 
+        p.add(new JLabel("Jam:"), g);
+        g.gridx = 3; 
+        p.add(txtJam, g);
 
-        g.gridy = 2; g.gridx = 0; p.add(new JLabel("Pelanggan:"), g);
-        g.gridx = 1; g.gridwidth = 3; g.fill = GridBagConstraints.HORIZONTAL;
+        g.gridy = 2; 
+        g.gridx = 0; 
+        p.add(new JLabel("Pelanggan:"), g);
+        g.gridx = 1; 
+        g.gridwidth = 3; 
+        g.fill = GridBagConstraints.HORIZONTAL;
         p.add(cbPelanggan, g);
         return p;
     }
@@ -198,9 +215,12 @@ public class TransaksiForm extends JFrame {
 
     private void hitungTotal() {
         double t = 0;
-        for (int r = 0; r < modelDetail.getRowCount(); r++) t += parse(modelDetail.getValueAt(r, 3));
-        for (int r = 0; r < modelItem.getRowCount(); r++) t += parse(modelItem.getValueAt(r, 3));
-        for (int r = 0; r < modelBiaya.getRowCount(); r++) t += parse(modelBiaya.getValueAt(r, 1));
+        for (int r = 0; r < modelDetail.getRowCount(); r++) 
+            t += parse(modelDetail.getValueAt(r, 3));
+        for (int r = 0; r < modelItem.getRowCount(); r++) 
+            t += parse(modelItem.getValueAt(r, 3));
+        for (int r = 0; r < modelBiaya.getRowCount(); r++) 
+            t += parse(modelBiaya.getValueAt(r, 1));
         lblTotal.setText(String.format("%.2f", t));
     }
 
@@ -307,8 +327,13 @@ public class TransaksiForm extends JFrame {
     }
 
     private double parse(Object o) {
-        if (o == null || o.toString().isBlank()) return 0;
-        try { return Double.parseDouble(o.toString()); } catch (Exception e) { return 0; }
+        if (o == null || o.toString().isBlank()) 
+            return 0;
+        try { 
+            return Double.parseDouble(o.toString()); 
+        } catch (Exception e) { 
+            return 0; 
+        }
     }
 
     public static void main(String[] args) {
@@ -316,9 +341,17 @@ public class TransaksiForm extends JFrame {
     }
 
     private static class ComboboxItem {
-        int id; String text; double harga;
-        ComboboxItem(int id, String text) { this(id, text, 0); }
-        ComboboxItem(int id, String text, double harga) { this.id = id; this.text = text; this.harga = harga; }
-        public String toString() { return text; }
+        int id; 
+        String text; 
+        double harga;
+        ComboboxItem(int id, String text) { 
+            this(id, text, 0); 
+        }
+        ComboboxItem(int id, String text, double harga) { 
+            this.id = id; this.text = text; this.harga = harga; 
+        }
+        public String toString() { 
+            return text; 
+        }
     }
 }

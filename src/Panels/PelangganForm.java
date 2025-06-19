@@ -1,4 +1,3 @@
-// File: Panels/PelangganForm.java
 package Panels;
 
 import javax.swing.*;
@@ -14,7 +13,7 @@ public class PelangganForm extends JFrame {
 
     private JTable table;
     private DefaultTableModel tableModel;
-    private int editingRow = -1;            // -1 = mode tambah, >=0 = mode edit
+    private int editingRow = -1;
 
     public PelangganForm() {
         setTitle("Manajemen Data Pelanggan");
@@ -25,9 +24,6 @@ public class PelangganForm extends JFrame {
         loadData();
     }
 
-    /* =====================================================
-       =========  UI  =====================================
-       ===================================================== */
     private void initComponents() {
         JPanel formPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gc = new GridBagConstraints();
@@ -61,7 +57,6 @@ public class PelangganForm extends JFrame {
         gc.gridx = 0; gc.gridy = labels.length; gc.gridwidth = 2;
         formPanel.add(btnPanel, gc);
 
-        // kolom ke‑4 (id) disembunyikan di JTable
         String[] columnNames = { "Nama", "Telepon", "Jalan", "No Rumah", "ID" };
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override public boolean isCellEditable(int r,int c){return false;}
@@ -74,7 +69,6 @@ public class PelangganForm extends JFrame {
         splitPane.setResizeWeight(0.35);
         add(splitPane);
 
-        /* ===== EVENT ===== */
         btnSimpan.addActionListener(e -> saveOrUpdate());
         btnClear.addActionListener(e -> clearForm());
         btnHapus.addActionListener(e -> deleteSelected());
@@ -84,9 +78,6 @@ public class PelangganForm extends JFrame {
         });
     }
 
-    /* =====================================================
-       =========  DB OPERATIONS  ===========================
-       ===================================================== */
     private void loadData() {
         tableModel.setRowCount(0);
         try (Connection con = Koneksi.getConnection();
@@ -114,7 +105,7 @@ public class PelangganForm extends JFrame {
         String nomor= txtNomor.getText().trim();
 
         try (Connection con = Koneksi.getConnection()) {
-            if (editingRow == -1) { // INSERT
+            if (editingRow == -1) {
                 String sql = "INSERT INTO Pelanggan(nama,no_telp,jalan,no_rumah) OUTPUT INSERTED.id_pelanggan VALUES (?,?,?,?)";
                 try (PreparedStatement ps = con.prepareStatement(sql)) {
                     ps.setString(1,nama); ps.setString(2,telp); ps.setString(3,jalan); ps.setString(4,nomor);
@@ -123,7 +114,7 @@ public class PelangganForm extends JFrame {
                         tableModel.addRow(new Object[]{nama,telp,jalan,nomor,id});
                     }
                 }
-            } else {              // UPDATE
+            } else {
                 int id = (int) tableModel.getValueAt(editingRow,4);
                 String sql = "UPDATE Pelanggan SET nama=?,no_telp=?,jalan=?,no_rumah=? WHERE id_pelanggan=?";
                 try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -151,9 +142,6 @@ public class PelangganForm extends JFrame {
         } catch (Exception ex){ JOptionPane.showMessageDialog(this,"Gagal hapus:\n"+ex.getMessage()); }
     }
 
-    /* =====================================================
-       =========  FORM HELPERS  ============================
-       ===================================================== */
     private void fillFormFromTable(){
         int row = table.getSelectedRow();
         if(row>-1){ editingRow=row;
