@@ -86,9 +86,9 @@ public class PelangganForm extends JFrame {
             while (rs.next()) {
                 tableModel.addRow(new Object[]{
                         rs.getString("nama"),
-                        rs.getString("telepon"),
+                        rs.getString("no_telp"),
                         rs.getString("jalan"),
-                        rs.getString("nomor"),
+                        rs.getString("no_rumah"),
                         rs.getInt("id_pelanggan")
                 });
             }

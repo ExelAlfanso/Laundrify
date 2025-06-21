@@ -18,9 +18,11 @@ public class TransaksiForm extends JFrame {
     private final JFormattedTextField txtJam = new JFormattedTextField(DateTimeFormatter.ofPattern("HH:mm"));
     private final JComboBox<ComboboxItem> cbPelanggan = new JComboBox<>();
 
-    private final DefaultTableModel modelDetail = new DefaultTableModel(new String[]{"Layanan", "Qty", "Harga", "Subtotal", "ID"}, 0);
-    private final DefaultTableModel modelItem = new DefaultTableModel(new String[]{"Nama Item", "Jumlah", "Harga Satuan", "Subtotal"}, 0);
-    private final DefaultTableModel modelBiaya = new DefaultTableModel(new String[]{"Nama Biaya", "Jumlah"}, 0);
+    private final JTextArea txtCatatan = new JTextArea(5, 20);
+
+    private final DefaultTableModel modelDetail = new DefaultTableModel(new String[]{"Layanan", "Qty (kg)", "Harga (Rp)", "Subtotal (Rp)", "ID"}, 0);
+    private final DefaultTableModel modelItem = new DefaultTableModel(new String[]{"Nama Item", "Jumlah", "Harga Satuan (Rp)", "Subtotal (Rp)"}, 0);
+    private final DefaultTableModel modelBiaya = new DefaultTableModel(new String[]{"Nama Biaya", "Harga (Rp)"}, 0);
 
     private final JLabel lblTotal = new JLabel("0.00");
     private final JButton btnSimpanCetak = new JButton("Simpan & Cetak");
@@ -29,7 +31,7 @@ public class TransaksiForm extends JFrame {
 
     public TransaksiForm() {
         setTitle("Input Transaksi");
-        setSize(900, 620);
+        setSize(900, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -64,6 +66,7 @@ public class TransaksiForm extends JFrame {
         tabs.addTab("Detail Layanan", detailTab());
         tabs.addTab("Item Tambahan", itemTab());
         tabs.addTab("Biaya Tambahan", biayaTab());
+        tabs.addTab("Catatan", catatanTab());
         root.add(tabs, BorderLayout.CENTER);
 
         JPanel south = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -148,9 +151,9 @@ public class TransaksiForm extends JFrame {
         JTextField nama = new JTextField(10);
         JTextField jumlah = new JTextField(6);
         JButton add = new JButton("Tambah");
-        form.add(new JLabel("Biaya:")); 
+        form.add(new JLabel("Nama Biaya:")); 
         form.add(nama);
-        form.add(new JLabel("Jumlah:")); 
+        form.add(new JLabel("Harga:")); 
         form.add(jumlah);
         form.add(add);
 
@@ -170,6 +173,12 @@ public class TransaksiForm extends JFrame {
         p.add(form, BorderLayout.NORTH);
         p.add(new JScrollPane(tbl), BorderLayout.CENTER);
         return p;
+    }
+
+    private JScrollPane catatanTab() {
+        txtCatatan.setLineWrap(true);
+        txtCatatan.setWrapStyleWord(true);
+        return new JScrollPane(txtCatatan);
     }
 
     private JPanel headerPanel() {
@@ -227,20 +236,21 @@ public class TransaksiForm extends JFrame {
     private boolean save() {
         try (Connection con = Koneksi.getConnection()) {
             con.setAutoCommit(false);
-            String sqlTrx = "INSERT INTO Transaksi (tgl_masuk, jam_masuk, id_pelanggan, total_transaksi) OUTPUT INSERTED.no_nota VALUES (?,?,?,?)";
+            String sqlTrx = "INSERT INTO Transaksi (tgl_masuk, jam_masuk, id_pelanggan, catatan, total_transaksi) OUTPUT INSERTED.no_nota VALUES (?,?,?,?,?)";
             LocalDateTime dt = LocalDateTime.parse(txtTanggal.getText() + "T" + txtJam.getText() + ":00");
             int pelangganId = ((ComboboxItem) cbPelanggan.getSelectedItem()).id;
             double total = Double.parseDouble(lblTotal.getText());
+            String catatan = txtCatatan.getText().trim();
             int noNota;
 
             try (PreparedStatement ps = con.prepareStatement(sqlTrx)) {
                 ps.setDate(1, java.sql.Date.valueOf(dt.toLocalDate()));
                 ps.setTime(2, java.sql.Time.valueOf(dt.toLocalTime()));
                 ps.setInt(3, pelangganId);
-                ps.setDouble(4, total);
+                ps.setString(4, catatan);
+                ps.setDouble(5, total);
                 try (ResultSet rs = ps.executeQuery()) {
-                    rs.next();
-                    noNota = rs.getInt(1);
+                    rs.next(); noNota = rs.getInt(1);
                 }
             }
 
@@ -314,7 +324,8 @@ public class TransaksiForm extends JFrame {
             sb.append(modelBiaya.getValueAt(r, 0)).append(" : ")
               .append(modelBiaya.getValueAt(r, 1)).append('\n');
 
-        sb.append("\nTOTAL : ").append(lblTotal.getText());
+        sb.append("\nCatatan:\n").append(txtCatatan.getText().isBlank() ? "-" : txtCatatan.getText()).append("\n\n");
+        sb.append("TOTAL : ").append(lblTotal.getText());
 
         JOptionPane.showMessageDialog(this, new JTextArea(sb.toString()),
                 "Nota " + txtNoNota.getText(), JOptionPane.INFORMATION_MESSAGE);
@@ -327,8 +338,7 @@ public class TransaksiForm extends JFrame {
     }
 
     private double parse(Object o) {
-        if (o == null || o.toString().isBlank()) 
-            return 0;
+        if (o == null || o.toString().isBlank()) return 0;
         try { 
             return Double.parseDouble(o.toString()); 
         } catch (Exception e) { 
